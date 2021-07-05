@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -17,6 +18,13 @@ import java.io.Serializable;
 public class GameActivity extends AppCompatActivity {
 
     public class Node {
+        /*
+        This node contains the fields text, leftButton, rightButton, left and right. The text
+        variable contains the text that will be displayed. This text describes the game-play
+        situation the user is in. The leftButton and rightButton variables contain the text for the
+        left and right buttons. The text gives the user a choice on how to continue the story, and
+        the user clicks one of the buttons to make a decision.
+         */
         String text;
         String leftButton;
         String rightButton;
@@ -32,7 +40,7 @@ public class GameActivity extends AppCompatActivity {
     }
 
     public class BinaryTree {
-        // Root of Binary Tree
+        // Root of a binary tree, using the above node
         Node root;
 
         BinaryTree()
@@ -46,6 +54,7 @@ public class GameActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // The entire story and decisions are loaded here into a binary tree structure
 
         tree.root = new Node("You wake up in what seems to be a forest. It's nighttime, and you can't seem to remember how you got here.", "Look around", "Call for help");
 
@@ -664,10 +673,24 @@ public class GameActivity extends AppCompatActivity {
 
         newTree.root = tree.root;
         setContentView(R.layout.activity_game);
+
+        // The text for TypingEffect, buttonRight and buttonLeft is shown as a custom font
+        Typeface type = Typeface.createFromAsset(getAssets(),"fonts/Enchanted_Land.otf");
+        TextView tv1 = (TextView)findViewById(R.id.textView2);
+        Button buttonRight = (Button)findViewById(R.id.button2);
+        Button buttonLeft = (Button)findViewById(R.id.button3);
+        Button buttonRestart = (Button)findViewById(R.id.button4);
+        tv1.setTypeface(type);
+        buttonRight.setTypeface(type);
+        buttonLeft.setTypeface(type);
+        buttonRestart.setTypeface(type);
     }
 
     public void rightClick(View view){
-        TypingEffect tv1 = (TypingEffect)findViewById(R.id.textView2);
+        /*
+        Called when user presses the right button.
+         */
+        TextView tv1 = (TextView)findViewById(R.id.textView2);
         Button buttonRight = (Button)findViewById(R.id.button2);
         if (buttonRight.getText().toString().equals("Yes")) {
             tree.root = newTree.root;
@@ -676,9 +699,7 @@ public class GameActivity extends AppCompatActivity {
             tree.root = tree.root.right;
         }
 
-        tv1.setText("");
-        tv1.setCharacterDelay(25);
-        tv1.animateText(tree.root.text);
+        tv1.setText(tree.root.text);
 
         if (!tree.root.rightButton.equals("")) {
             buttonRight.setVisibility(View.VISIBLE);
@@ -706,15 +727,16 @@ public class GameActivity extends AppCompatActivity {
     }
 
     public void leftClick(View view){
-        TypingEffect tv1 = (TypingEffect)findViewById(R.id.textView2);
+        /*
+        Called when user presses the left button.
+         */
+        TextView tv1 = (TextView)findViewById(R.id.textView2);
         Button buttonLeft = (Button)findViewById(R.id.button3);
         if (!buttonLeft.getText().toString().equals("No")) {
             tree.root = tree.root.left;
         }
 
-        tv1.setText("");
-        tv1.setCharacterDelay(25);
-        tv1.animateText(tree.root.text);
+        tv1.setText(tree.root.text);
 
         Button buttonRight = (Button)findViewById(R.id.button2);
         if (!tree.root.rightButton.equals("")) {
@@ -743,10 +765,11 @@ public class GameActivity extends AppCompatActivity {
 
     @SuppressLint("SetTextI18n")
     public void restart(View view) {
-        TypingEffect tv1 = (TypingEffect)findViewById(R.id.textView2);
-        tv1.setText("");
-        tv1.setCharacterDelay(25);
-        tv1.animateText("Are you sure you'd like to restart?");
+        /*
+        Called when user presses the RESTART button.
+         */
+        TextView tv1 = (TextView) findViewById(R.id.textView2);
+        tv1.setText("Are you sure you'd like to restart?");
 
         Button buttonRight = (Button)findViewById(R.id.button2);
         buttonRight.setVisibility(View.VISIBLE);
@@ -772,10 +795,10 @@ public class GameActivity extends AppCompatActivity {
         SharedPreferences mPrefs = getPreferences(MODE_PRIVATE);
         String json = mPrefs.getString("MyObject", "");
         tree = gson.fromJson(json, BinaryTree.class);
-        TypingEffect tv1 = (TypingEffect)findViewById(R.id.textView2);
-        tv1.setText("");
-        tv1.setCharacterDelay(25);
-        tv1.animateText(tree.root.text);
+        TextView tv1 = (TextView)findViewById(R.id.textView2);
+        Typeface type = Typeface.createFromAsset(getAssets(),"fonts/Enchanted_Land.otf");
+        tv1.setTypeface(type);
+        tv1.setText(tree.root.text);
 
         Button buttonRight = (Button)findViewById(R.id.button2);
         if (!tree.root.rightButton.equals("")) {
